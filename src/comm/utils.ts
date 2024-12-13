@@ -16,13 +16,23 @@ export class Utils {
    * 获得请求IP
    */
   async getReqIP(ctx: Context) {
+    // return ctx.ip;
+    // const req = ctx.req;
+    // return (
+    //   req.headers['x-forwarded-for'] ||
+    //   req.socket.remoteAddress.replace('::ffff:', '')
+    // );
     const req = ctx.req;
-    return (
-      req.headers['x-forwarded-for'] ||
-      req.socket.remoteAddress.replace('::ffff:', '')
-    );
+    const xff = req.headers['x-forwarded-for'];
+    if (xff) {
+      return xff;
+    }
+    if (req.socket && req.socket.remoteAddress) {
+      return req.socket.remoteAddress.replace('::ffff:', '');
+    }
+    // 如果都没有则返回空字符串或其他默认值，避免出现 undefined
+    return '';
   }
-
   /**
    * 去除对象的空值属性
    * @param obj
